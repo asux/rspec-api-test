@@ -11,6 +11,8 @@ class RSpecAPITest
   end
 
   module HTTPHelpers
+    attr_reader :last_response
+
     class JSONHashResponse < DelegateClass(Hash)
       attr_reader :code, :headers
       def initialize(hash, code, headers)
@@ -33,7 +35,7 @@ class RSpecAPITest
       defaults = RSpecAPITest.config[:defaults] || {}
       opts_i = args[2].is_a?(String) ? 3 : 2
       args[opts_i] ||= {} if defaults
-      args[opts_i].reverse_merge!(defaults) 
+      args[opts_i].reverse_merge!(defaults)
       RestClient.send(*args)
     rescue RestClient::Exception => e
       e.response
@@ -48,7 +50,7 @@ class RSpecAPITest
       self.send(:define_method, verb) do |*args|
         out = [verb, "#{RSpecAPITest.config[:base_url]}#{args[0]}"] +  args[1..-1]
         response = request(*out)
-        begin 
+        @last_response = begin
           json = JSON.parse(response)
           classes[json.class].new(json, response.code, response.headers)
         rescue JSON::ParserError
