@@ -19,7 +19,8 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".rspec",
-    ".rvmrc",
+    ".ruby-version",
+    ".ruby-gemset",
     ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
